@@ -1,0 +1,3 @@
+class CustomExcetionImage(Exception):
+  pass
+  
