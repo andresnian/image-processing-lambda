@@ -1,0 +1,12 @@
+docker build -t image-processing-lambda .
+
+docker run -p 9001:8080 image-processing-lambda
+
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 624981542374.dkr.ecr.us-east-1.amazonaws.com
+
+aws ecr create-repository --repository-name image-processing-lambda --image-scanning-configuration scanOnPush=true --image-tag-mutability MUTABLE
+
+docker tag  image-processing-lambda:latest 624981542374.dkr.ecr.us-east-1.amazonaws.com/image-processing-lambda:latest
+docker push 624981542374.dkr.ecr.us-east-1.amazonaws.com/image-processing-lambda:latest
+
+curl -XPOST "http://localhost:9001/2015-03-31/functions/function/invocations" -d '{"path": "images/foto-prueba.jpg", "height": 800, "width": 800}'
